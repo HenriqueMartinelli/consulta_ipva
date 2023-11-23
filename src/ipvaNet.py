@@ -1,6 +1,10 @@
 import requests
+import logging
+
 from bs4 import BeautifulSoup
 from twocaptcha import TwoCaptcha
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class ConsultaIPVA:
@@ -27,6 +31,7 @@ class ConsultaIPVA:
         return viewstate, event_validation, viewstate_generator
 
     def prepare_payload(self, renavam, placa, captcha_result):
+        logging.info(f"Consultando, placa: {placa}, renavam: {renavam}")
         viewstate, event_validation, viewstate_generator = self.extract_viewstate_info(self.get_html_content())
         payload = {
             "__VIEWSTATE": viewstate,

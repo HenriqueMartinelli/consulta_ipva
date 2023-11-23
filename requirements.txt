@@ -1,0 +1,4 @@
+pandas==2.0.3
+requests==2.22.0
+beautifulsoup4==4.12.2
+2captcha-python==1.2.2

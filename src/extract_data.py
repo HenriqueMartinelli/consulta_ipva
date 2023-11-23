@@ -17,7 +17,7 @@ class Extract():
     def extract_payment_info(self, table_content):
         payments = []
         if table_content is None:
-            tableConteudo = self.soup.select_one("#conteudoPaginaPlaceHolder_tbPagtosEfetuados")
+            tableConteudo = table_content.select_one("#conteudoPaginaPlaceHolder_tbPagtosEfetuados")
             rows = tableConteudo.findAll("tr")
         else:
             rows = table_content.find("table").findAll("tr")
@@ -53,18 +53,18 @@ class Extract():
         
         return multas
 
-    def extract_data(self, consulta_content):
+    def extract_data(self, placa, renavam, consulta_content):
         soup = BeautifulSoup(consulta_content, "html.parser")
-        self.soup = soup
         
-        extracted_info = self.extract_info_table(soup.select_one("#conteudoPaginaPlaceHolder_Panel1 > table:nth-child(5)"), {0: 1, 2: 3})
+        # extracted_info = self.extract_info_table(soup.select_one("#conteudoPaginaPlaceHolder_Panel1 > table:nth-child(5)"), {0: 1, 2: 3})
         extracted_base_calculo = self.extract_info_table(soup.select_one("#conteudoPaginaPlaceHolder_Panel1 > table:nth-child(11)"), {0: 3})
-        extracted_payments = self.extract_payment_info(soup.select_one("#conteudoPaginaPlaceHolder_pnlModalidadesPagto > table:nth-child(2)"))
-        extracted_multas = self.extract_multas(soup.select_one("#conteudoPaginaPlaceHolder_tbMultaResumo"))
+        # extracted_payments = self.extract_payment_info(soup.select_one("#conteudoPaginaPlaceHolder_pnlModalidadesPagto > table:nth-child(2)"))
+        # extracted_multas = self.extract_multas(soup.select_one("#conteudoPaginaPlaceHolder_tbMultaResumo"))
         
         return {
-            'info': extracted_info,
+            "placa": placa,
+            "renavam": renavam,
             'base_calculo': extracted_base_calculo,
-            'pagamentos': extracted_payments,
-            'multas': extracted_multas
+            "error": False,
+            "msg": None
         }
