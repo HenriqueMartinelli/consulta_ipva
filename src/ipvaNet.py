@@ -53,13 +53,26 @@ class ConsultaIPVA:
             'Origin': 'https://www.ipva.fazenda.sp.gov.br',
             'Referer': 'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx'
         }
-        try: consultation = self.session.post(self.url, data=payload, headers=headers, timeout=10)
+        try: consultation = self.session.post(self.url, data=payload, headers=headers, timeout=5)
         except: raise ValueError("Site está demorando muito a responder, ou está instável")
+        if "digite placa aqui" in consultation.text.lower():
+            raise ValueError("Não foi possivel consultar")
         return consultation
         
 
     def run_query(self, renavam, placa):
-        captcha_result = self.solve_captcha()
-        payload = self.prepare_payload(renavam, placa, captcha_result)
-        consultation = self.make_request(payload)
-        return consultation
+        tentativas = 3
+        n = 0 
+        while tentativas:
+            try:
+                tentativas -= 1
+                n += 1
+                captcha_result = self.solve_captcha()
+                payload = self.prepare_payload(renavam, placa, captcha_result)
+                consultation = self.make_request(payload)
+                return consultation
+            except Exception as e:
+                logging.warning(f"Não foi possível consultar, placa:{placa}, renavam:{renavam}, tentativas:{n}/3")
+        raise ValueError(e.args[0])
+
+        

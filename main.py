@@ -57,20 +57,17 @@ class queryConcurrent(ConsultaIPVA, Extract):
     def save_dict_to_csv(self, list_datas):
         current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         file_name = f"{current_datetime}.csv"
+        logging.info(f"Arquivo salvo como: {file_name}")
         df = pd.DataFrame(list_datas)
         df.to_csv(file_name, index=False)
         return file_name
     
 
-    def start(self, **kwargs):
-         result = self.concurrent_calls(kwargs)
-         self.save_dict_to_csv(result)
-
-
     def get_csv_path(self):
         while True:
             csv_path = input("Digite o caminho completo do arquivo CSV: ")
             if os.path.exists(csv_path):
+                # logging.info(f"Arquivo salvo como: {file_name}")
                 return csv_path
             else:
                 print("Arquivo não encontrado. Por favor, forneça um caminho válido.")
@@ -91,7 +88,9 @@ class queryConcurrent(ConsultaIPVA, Extract):
             )
 
         query_instance = queryConcurrent()
-        query_instance.concurrent_calls(kwargs)
+        result = query_instance.concurrent_calls(kwargs)
+        self.save_dict_to_csv(result)
+
 
 if __name__ == "__main__":
     load_dotenv()  
